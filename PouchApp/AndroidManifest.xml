@@ -28,6 +28,10 @@
             android:enabled="true"
             android:exported="true" >
         </service>
+        <activity
+            android:name="com.example.pouchapp.DisplayMessageActivity"
+            android:label="@string/title_activity_display_message" >
+        </activity>
     </application>
 
 </manifest>

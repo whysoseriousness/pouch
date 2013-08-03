@@ -22,12 +22,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< HEAD
 
         <service
             android:name="com.example.pouchapp.MyService"
             android:enabled="true"
             android:exported="true" >
         </service>
+=======
+        <activity
+            android:name="com.example.pouchapp.DisplayMessageActivity"
+            android:label="@string/title_activity_display_message" >
+        </activity>
+>>>>>>> 3fff90ae58e1b0308840881051705f85e8606647
     </application>
 
 </manifest>
