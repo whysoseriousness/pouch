@@ -14,11 +14,13 @@ import android.view.View;
 
 public class MainActivity extends Activity {
 	public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
+	public MemoryService service; 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        service = new MemoryService();
     }
 
 
@@ -54,5 +56,11 @@ public class MainActivity extends Activity {
     	String messageOut = Html.fromHtml(message.toString()).toString();
     	intent.putExtra(EXTRA_MESSAGE, messageOut);
     	startActivity(intent);
+    }
+    
+    
+    public static void main(String[] args) throws Exception{
+    	
+    	throw new Exception();
     }
 }

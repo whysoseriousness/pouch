@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="8"
         android:targetSdkVersion="17" />
 
     <application
@@ -24,14 +24,10 @@
         </activity>
 
         <service
-            android:name="com.example.pouchapp.MemoryService"
+            android:name="com.example.pouchapp.MyService"
             android:enabled="true"
             android:exported="true" >
         </service>
-        <activity
-            android:name="com.example.pouchapp.DisplayMessageActivity"
-            android:label="@string/title_activity_display_message" >
-        </activity>
     </application>
 
 </manifest>
