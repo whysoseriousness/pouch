@@ -24,7 +24,7 @@
         </activity>
 
         <service
-            android:name="com.example.pouchapp.MyService"
+            android:name="com.example.pouchapp.MemoryService"
             android:enabled="true"
             android:exported="true" >
         </service>
