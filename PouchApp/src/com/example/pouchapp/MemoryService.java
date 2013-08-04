@@ -61,15 +61,15 @@ public class MemoryService extends IntentService {
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 	
+
 	//Initiates global file
 	//creates global file cache
 	public boolean createGlobal(){
 
-		
 		String FILENAME = "global";
 		String TIMENAME = "time";
-		File mediaDir = new File(FILENAME);
-		File time = new File(TIMENAME);
+		File mediaDir = new File(getFilesDir(),FILENAME);
+		File time = new File(getFilesDir(),TIMENAME);
 		
 		//Creates file
 		if (!mediaDir.exists()){
@@ -80,9 +80,10 @@ public class MemoryService extends IntentService {
 			
 			try {
 				
-				fos = openFileOutput(FILENAME, Context.MODE_WORLD_WRITEABLE);
+				fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
 				fos.write(Integer.toString(input).getBytes());
 				fos.close();
+				mediaDir = new File(getFilesDir(),FILENAME);
 				Log.e("CreateGlobal", mediaDir.exists()+"");
 			} catch (Exception e) {
 				return false;
@@ -121,13 +122,13 @@ public class MemoryService extends IntentService {
 	public void updateTime(){
 		
 		String TIMENAME = "time";
-		File time = new File(TIMENAME);
+		File time = new File(getFilesDir(),TIMENAME);
 		
 		//Writes to time
 		if(time.exists()){
 			
 			time.delete();
-			time = new File(TIMENAME);
+			time = new File(getFilesDir(),TIMENAME);
 		}
 		
 			FileOutputStream fos;
@@ -159,7 +160,7 @@ public class MemoryService extends IntentService {
 	public int getNumFiles(){
 				
 		String FILENAME = "global";
-		File mediaDir = new File(FILENAME);
+		File mediaDir = new File(getFilesDir(),FILENAME);
 		
 		//Reads from file
 		if (mediaDir.exists()){
@@ -191,10 +192,10 @@ public class MemoryService extends IntentService {
 	
 		String FILENAME = "global";
 		
-		File mediaDir = new File(FILENAME);
+		File mediaDir = new File(getFilesDir(),FILENAME);
 		int input = getNumFiles()+1;
 		mediaDir.delete();
-		mediaDir = new File(FILENAME);
+		mediaDir = new File(getFilesDir(),FILENAME);
 		
 		
 			FileOutputStream fos;
@@ -244,7 +245,7 @@ public class MemoryService extends IntentService {
 	//Get file on path
 	public File getFile(String path){
 		
-		File dir = new File(path);
+		File dir = new File(getFilesDir(),path);
 		
 		//Reads from file
 		if (dir.exists()){
@@ -335,7 +336,7 @@ public class MemoryService extends IntentService {
 		int numCode = increaseFiles();
 		
 		//Writer the preview file
-		File file = new File(numCode+"");
+		File file = new File(getFilesDir(),numCode+"");
 		try {
 			
 			file.createNewFile();
@@ -360,7 +361,7 @@ public class MemoryService extends IntentService {
 			String htmlPath = (String)json.get("file_path");
 			
 			//creates html file
-			file = new File(htmlPath);
+			file = new File(getFilesDir(),htmlPath);
 			
 			try {
 				
@@ -398,6 +399,7 @@ public class MemoryService extends IntentService {
 		request.setHeader("Accept", "application/json");
 		request.setHeader("Content-type", "application/json");
 
+		Log.e("Request", request.toString());
 		HttpResponse response = null;
 		try {
 			response = client.execute(request);
@@ -470,9 +472,9 @@ public class MemoryService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
-		boolean result = createGlobal();
+		//boolean result = createGlobal();
 
-		Log.w("TeamDick", "Vitchyr Monitor");
+		Log.w("TeamChyr", "Vitchyr Monitor");
 		
 		//writeToFile(grabFromServer());
 		// pull from server
@@ -484,11 +486,12 @@ public class MemoryService extends IntentService {
 		
 		super.onCreate();
 		createGlobal();
+		writeToFile(grabFromServer());
 		
 		AccountManager am = AccountManager.get(this);
         Account[] accounts = am.getAccountsByType("com.google");
         user = accounts[0].name;
         
-		setServiceAlarm(this, true);
+		//setServiceAlarm(this, true);
 	}
 }

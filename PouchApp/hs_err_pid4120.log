@@ -1,7 +1,7 @@
 #
 # A fatal error has been detected by the Java Runtime Environment:
 #
-#  Internal Error (javaClasses.cpp:129), pid=3840, tid=400
+#  Internal Error (javaClasses.cpp:129), pid=4120, tid=4616
 #  fatal error: Invalid layout of preloaded class
 #
 # JRE version: 7.0_25-b17
@@ -14,9 +14,9 @@
 
 ---------------  T H R E A D  ---------------
 
-Current thread (0x000000000270d800):  JavaThread "Unknown thread" [_thread_in_vm, id=400, stack(0x0000000002560000,0x0000000002660000)]
+Current thread (0x000000000299d800):  JavaThread "Unknown thread" [_thread_in_vm, id=4616, stack(0x00000000027e0000,0x00000000028e0000)]
 
-Stack: [0x0000000002560000,0x0000000002660000]
+Stack: [0x00000000027e0000,0x00000000028e0000]
 
 ---------------  P R O C E S S  ---------------
 
@@ -24,7 +24,7 @@ Java Threads: ( => current thread )
 
 Other Threads:
 
-=>0x000000000270d800 (exited) JavaThread "Unknown thread" [_thread_in_vm, id=400, stack(0x0000000002560000,0x0000000002660000)]
+=>0x000000000299d800 (exited) JavaThread "Unknown thread" [_thread_in_vm, id=4616, stack(0x00000000027e0000,0x00000000028e0000)]
 
 VM state:not at safepoint (not fully initialized)
 
@@ -40,16 +40,16 @@ Internal exceptions (0 events):
 No events
 
 Events (10 events):
-Event: 0.007 loading class 0x0000000002723ca0 done
-Event: 0.008 loading class 0x00000000027239d0 done
-Event: 0.008 loading class 0x0000000002723a90
-Event: 0.008 loading class 0x000000000275fc80
-Event: 0.008 loading class 0x000000000275fc80 done
-Event: 0.008 loading class 0x000000000275f980
-Event: 0.008 loading class 0x000000000275f980 done
-Event: 0.008 loading class 0x000000000b5d0cf0
-Event: 0.008 loading class 0x000000000b5d0cf0 done
-Event: 0.008 loading class 0x0000000002723a90 done
+Event: 0.008 loading class 0x00000000029b3df0 done
+Event: 0.008 loading class 0x00000000029b3820 done
+Event: 0.008 loading class 0x00000000029b3ca0
+Event: 0.008 loading class 0x00000000029f0fd0
+Event: 0.008 loading class 0x00000000029f0fd0 done
+Event: 0.008 loading class 0x00000000029f1150
+Event: 0.008 loading class 0x00000000029f1150 done
+Event: 0.008 loading class 0x000000000b8609c0
+Event: 0.008 loading class 0x000000000b8609c0 done
+Event: 0.008 loading class 0x00000000029b3ca0 done
 
 
 Dynamic libraries:
@@ -97,10 +97,10 @@ OS: Windows 8 , 64 bit Build 9200
 
 CPU:total 4 (2 cores per cpu, 2 threads per core) family 6 model 42 stepping 7, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, ht, tsc, tscinvbit
 
-Memory: 4k page, physical 8269036k(3943044k free), swap 9514220k(4145292k free)
+Memory: 4k page, physical 8269036k(3945208k free), swap 9514220k(4155468k free)
 
 vm_info: Java HotSpot(TM) 64-Bit Server VM (23.25-b01) for windows-amd64 JRE (1.7.0_25-b17), built on Jun 21 2013 12:58:32 by "java_re" with unknown MS VC++:1600
 
-time: Sun Aug 04 05:44:34 2013
+time: Sun Aug 04 05:44:51 2013
 elapsed time: 0 seconds
 
