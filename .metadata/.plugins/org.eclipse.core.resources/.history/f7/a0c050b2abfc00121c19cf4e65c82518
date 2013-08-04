@@ -1,0 +1,40 @@
+package com.example.pouchapp;
+
+import java.util.HashMap;
+
+public class Feed extends HashMap {
+	public String title;
+	public String source;
+	public static String KEY_TITLE = "title";
+	public static String KEY_SOURCE = "source";
+	
+	public Feed(String title, String source){
+		this.title = title;
+		this.source = source;
+	}
+	
+	@Override
+	public String get(Object k){
+		String key = (String) k;
+		if (KEY_TITLE.equals(key)){
+			return title;
+		} else if (KEY_SOURCE.equals(key)) {
+			return source;
+		}
+		return null;
+	}
+}
+
+public class FeedAdapter extends SimpleAdapter {
+	private List<Feed> feeds;
+	
+	private int[] colors = new int[] {0x30ffffff, 0x30808080};
+	
+	@SuppressWarnings("unchecked")
+	public FeedAdapter(Context context, 
+					   List<? extends Map<String, String>> feeds, 
+					   int resource, String[] from, int[] to){
+		super(context, feeds, resource, from, to);
+		this.feeds = (List<Feed>) feeds;
+	}
+}

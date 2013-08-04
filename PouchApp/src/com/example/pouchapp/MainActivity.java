@@ -17,8 +17,8 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -35,7 +35,7 @@ public class MainActivity extends Activity {
         service = new MemoryService();
         Intent i = new Intent(this, MemoryService.class);
         this.startService(i);
-        
+        /*
         List<Map<String, String>> planetsList = initFeed();
         ListView lv = (ListView) findViewById(R.id.listView);
         registerForContextMenu(lv);
@@ -51,6 +51,15 @@ public class MainActivity extends Activity {
                  renderHtml(clickedView);
              }
         });
+        */
+        
+//         ListView lv = (ListView) findViewsById(R.id.listView);
+        ListView lv = (ListView) findViewById(R.id.listView);
+        List<Feed> feeds = getFeed();
+        ListAdapter adapter = new FeedAdapter(this, feeds, android.R.layout.simple_list_item_2,
+        									   new String[] {Feed.KEY_SOURCE, Feed.KEY_TITLE},
+        									   new int[] {android.R.id.text1, android.R.id.text2});
+        lv.setAdapter(adapter);
     }
     
     private List<Map<String, String>> initFeed(){
@@ -63,6 +72,16 @@ public class MainActivity extends Activity {
         planetsList.add(createPlanet("planet", "Uranus"));
         planetsList.add(createPlanet("planet", "Neptune"));
         return planetsList;
+    }
+    
+    private List<Feed> getFeed() {
+    	List<Feed> feeds = new ArrayList<Feed>();
+    	feeds.add(new Feed("Verge", "Obamba"));
+    	feeds.add(new Feed("Verge", "Michelle"));
+    	feeds.add(new Feed("Verge", "Android"));
+    	feeds.add(new Feed("Verge", "Apple"));
+    	feeds.add(new Feed("Verge", "Hackathon"));
+    	return feeds;
     }
     
     private HashMap<String, String> createPlanet(String key, String name){
