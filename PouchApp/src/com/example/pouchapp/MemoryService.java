@@ -6,13 +6,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Date;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +35,7 @@ import android.util.Log;
 
 public class MemoryService extends IntentService {
 	
+	private String url = "http://www.google.com";
 	public MemoryService(){
 		
 		this("Noname");
@@ -50,7 +57,9 @@ public class MemoryService extends IntentService {
 	public boolean createGlobal(){
 
 		String FILENAME = "global";
+		String TIMENAME = "time";
 		File mediaDir = new File(FILENAME);
+		File time = new File(TIMENAME);
 		
 		//Creates file
 		if (!mediaDir.exists()){
@@ -71,14 +80,63 @@ public class MemoryService extends IntentService {
 			
 		}
 		
+		//Writes to time
+		if(!time.exists()){
+			
+			FileOutputStream fos;
+			
+			try {
+				
+				fos = openFileOutput(TIMENAME, Context.MODE_PRIVATE);
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
+				writer.write(Calendar.getInstance().getTime().toString());
+				writer.close();
+				fos.close();
+				
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		
 		return true;
 	}
 
-	//retrieves number of articles
-	//0 = no log file, or no main
-	//-1 = error
+	//updates time table to most recent time
+	public void updateTime(){
+		
+		String TIMENAME = "time";
+		File time = new File(TIMENAME);
+		
+		//Writes to time
+		if(time.exists()){
+			
+			time.delete();
+			time = new File(TIMENAME);
+		}
+		
+			FileOutputStream fos;
+			
+			try {
+				
+				fos = openFileOutput(TIMENAME, Context.MODE_PRIVATE);
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
+				writer.write(Calendar.getInstance().getTime().toString());
+				writer.close();
+				fos.close();
+				
+			} catch (Exception e) {
+				
+			}
+		
+	}
+
+	//retrives time table
+	public String getTime(){
+		
+		return getStringFromFile("time");
+	}
 	
-	//Get total file count
+	//total file
 	public int getNumFiles(){
 				
 		String FILENAME = "global";
@@ -137,8 +195,6 @@ public class MemoryService extends IntentService {
 		return input;
 	}
 	
-	
-	//UNTESTED
 	//Get all previews for this user
 	public List<String> getAllPreviews(){
 		
@@ -153,36 +209,10 @@ public class MemoryService extends IntentService {
 			for(int i=0;i<=numFiles;i++){
 				
 				String path = i+"";
-				String toAdd = "";
+				String toAdd = getStringFromFile(path);
 				
-				File file = getFile(path);
-				
-				//if we have said file
-				if(file != null){
-					
-					String line = "";
-					try {
-						
-						BufferedReader reader = new BufferedReader(new FileReader(file));
-						
-						try {
-							
-							while( (line = reader.readLine()) != null){
-								toAdd+=line;
-							}
-							
-							reader.close();
-							
-						} catch (IOException e) {
-							
-							return null;
-						}
-					} catch (FileNotFoundException e) {
-						
-						return null;
-					}
-					Return.add(toAdd);
-				}
+				if(toAdd!=null)
+					Return.add(getStringFromFile(path));
 				
 				
 			}
@@ -190,8 +220,6 @@ public class MemoryService extends IntentService {
 		
 		return Return;
 	}
-	
-	//Get a file from path
 	
 	//Get file on path
 	public File getFile(String path){
@@ -207,8 +235,59 @@ public class MemoryService extends IntentService {
 		return null;
 	}
 	
-	//starts repeating 
+	//Converts file path to string
+	public String getStringFromFile(String path){
+		
+		File file = getFile(path);
+		String all = "";
+		
+		//if file exists
+		if(file!=null){
+			
+			String line = "";
+			FileInputStream input;
+			try {
+				
+				//opens stream and reader
+				input = openFileInput(path);
+				BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+				String toAdd = "";
+				
+				//add all lines
+				try {
+					while((toAdd = reader.readLine())!=null){
+						
+						all+=toAdd;
+					}
+				} catch (IOException e) {
+					
+					return null;
+				}
+			} catch (FileNotFoundException e) {
+				
+				return null;
+			}
+			
+			return all;
+		}
+		
+		return null;
+	}
 	
+	//Grabs all HTML files
+	public String getHtml(String path){
+		
+		File file = getFile(path);
+		String toAdd = "";
+		
+		if(file!=null){
+			
+			return getStringFromFile(path);
+		}
+		
+		return null;
+	}
+
 	//Repeatedly calls this service
 	public static void setServiceAlarm(Context context, boolean on){
 		
@@ -229,6 +308,7 @@ public class MemoryService extends IntentService {
 	}
 
 	
+	//HTML part UNTESTED
 	//creates a ID - Preview - Html link
 	public boolean createFile(String preview, Html html){
 		
@@ -239,7 +319,10 @@ public class MemoryService extends IntentService {
 		try {
 			
 			file.createNewFile();
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+
+			FileOutputStream fos = openFileOutput(numCode+"", Context.MODE_PRIVATE);
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
+			
 			
 			writer.write(preview);
 			writer.flush();
@@ -251,7 +334,28 @@ public class MemoryService extends IntentService {
 		}
 		
 		try {
+			
+			//grabs json name
 			JSONObject json = new JSONObject(preview);
+			String htmlPath = (String)json.get("file_URL");
+			//creates html file
+			file = new File(htmlPath);
+			
+			try {
+				
+				file.createNewFile();
+
+				FileOutputStream fos = openFileOutput(htmlPath, Context.MODE_PRIVATE);
+				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
+				
+				writer.write(html.toString());
+				writer.flush();
+				writer.close();
+				
+			} catch (IOException e) {
+				
+				return false;
+			}
 		} catch (JSONException e) {
 			
 			return false;
@@ -259,7 +363,25 @@ public class MemoryService extends IntentService {
 		return true;
 	}
 	
-	
+	public String grabFromServer(){
+		
+		HttpClient client = new DefaultHttpClient();
+	    HttpPost httppost = new HttpPost(url);
+
+	    try {
+	    	
+			HttpResponse response = client.execute(httppost);
+			return response.toString();
+			
+		} catch (ClientProtocolException e) {
+			
+			return null;
+		} catch (IOException e) {
+			
+			return null;
+		}
+	}
+
 	//What is called during this service
 	@Override
 	protected void onHandleIntent(Intent intent) {
