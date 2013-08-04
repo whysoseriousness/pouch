@@ -33,8 +33,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         service = new MemoryService();
-        Intent i = new Intent(this, MemoryService.class);
-        this.startService(i);
         
         List<Map<String, String>> planetsList = initFeed();
         ListView lv = (ListView) findViewById(R.id.listView);
@@ -102,7 +100,7 @@ public class MainActivity extends Activity {
     	String read;
 		StringBuilder message = new StringBuilder("");
     	try{
-    		AssetManager am = this.getAssets();
+    		AssetManager am =getAssets();
         	InputStream is = am.open(view.getText().toString());
     		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
     		while((read = bufferedReader.readLine()) != null){
@@ -113,6 +111,8 @@ public class MainActivity extends Activity {
     		message.append(getFilesDir());
     	}
 
+    	//String html = "<b>Testing some html</b>";
+    	//Html.fromHtml(html).toString()
     	String messageOut = Html.fromHtml(message.toString()).toString();
     	intent.putExtra(EXTRA_MESSAGE, messageOut);
     	startActivity(intent);

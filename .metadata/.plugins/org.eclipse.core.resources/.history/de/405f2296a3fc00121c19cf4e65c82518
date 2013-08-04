@@ -23,7 +23,7 @@ public class DisplayMessageActivity extends Activity {
         
         // Create the view
         TextView textView = new TextView(this);
-        textView.setTextSize(15);
+        textView.setTextSize(12);
         textView.setText(message);
         textView.setMovementMethod(new ScrollingMovementMethod());
         
