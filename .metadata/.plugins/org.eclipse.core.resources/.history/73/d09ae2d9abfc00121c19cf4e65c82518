@@ -1,0 +1,12 @@
+package com.example.pouchapp;
+
+import java.util.List;
+import java.util.Map;
+
+import android.content.Context;
+import android.widget.SimpleAdapter;
+
+public class FeedAdapter extends SimpleAdapter {
+
+}
+

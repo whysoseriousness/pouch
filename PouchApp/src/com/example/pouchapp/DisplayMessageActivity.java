@@ -23,9 +23,10 @@ public class DisplayMessageActivity extends Activity {
         
         // Create the view
         TextView textView = new TextView(this);
-        textView.setTextSize(15);
+        textView.setTextSize(18);
         textView.setText(message);
         textView.setMovementMethod(new ScrollingMovementMethod());
+        textView.setTextColor(-12303292);
         
         setContentView(textView);
 
