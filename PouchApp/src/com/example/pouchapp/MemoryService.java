@@ -207,8 +207,40 @@ public class MemoryService extends IntentService {
 		return null;
 	}
 	
-	//starts repeating 
-	
+	public Html getHtml(String path){
+		
+		File file = getFile(path);
+		String toAdd = "";
+		
+		if(file!=null){
+			
+			String line = "";
+			try {
+				
+				BufferedReader reader = new BufferedReader(new FileReader(file));
+				
+				try {
+					
+					while( (line = reader.readLine()) != null){
+						toAdd+=line;
+					}
+					
+					reader.close();
+					
+				} catch (IOException e) {
+					
+					return null;
+				}
+			} catch (FileNotFoundException e) {
+				
+				return null;
+			}
+			
+			return toAdd;
+		}
+		
+		return null;
+	}
 	//Repeatedly calls this service
 	public static void setServiceAlarm(Context context, boolean on){
 		
@@ -229,6 +261,7 @@ public class MemoryService extends IntentService {
 	}
 
 	
+	//HTML part UNTESTED
 	//creates a ID - Preview - Html link
 	public boolean createFile(String preview, Html html){
 		
@@ -251,7 +284,27 @@ public class MemoryService extends IntentService {
 		}
 		
 		try {
+			
+			//grabs json name
 			JSONObject json = new JSONObject(preview);
+			String htmlPath = (String)json.get("file_URL");
+			
+			//creates html file
+			file = new File(htmlPath);
+			
+			try {
+				
+				file.createNewFile();
+				BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+				
+				writer.write(html.toString());
+				writer.flush();
+				writer.close();
+				
+			} catch (IOException e) {
+				
+				return false;
+			}
 		} catch (JSONException e) {
 			
 			return false;
