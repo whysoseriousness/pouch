@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="14"
         android:targetSdkVersion="17" />
     
     <uses-permission android:name="android.permission.INTERNET" />
@@ -34,6 +34,9 @@
         <activity
             android:name="com.example.pouchapp.DisplayMessageActivity"
             android:label="@string/title_activity_display_message" >
+        </activity>
+        <activity
+            android:name="com.example.pouchapp.Feeder">
         </activity>
     </application>
 

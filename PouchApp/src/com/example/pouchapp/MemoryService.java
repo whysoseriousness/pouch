@@ -9,6 +9,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -17,8 +19,12 @@ import java.util.Date;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,12 +44,9 @@ import android.util.Log;
 public class MemoryService extends IntentService {
 	
 	private String url = "http://www.google.com";
-<<<<<<< HEAD
-	
-=======
 	private String user =""; 
->>>>>>> e26f5d24413c72c8af1f5c05825e9bfd46ba62d9
 	public MemoryService(){
+		
 		this("Noname");
 	}
 	public MemoryService(String name) {
@@ -95,7 +98,12 @@ public class MemoryService extends IntentService {
 				
 				fos = openFileOutput(TIMENAME, Context.MODE_PRIVATE);
 				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
-				writer.write(Calendar.getInstance().getTime().toString());
+				
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd|HH:mm:ss");
+				Calendar cal = Calendar.getInstance();
+				String date = dateFormat.format(cal.getTime())+"|"+cal.ZONE_OFFSET;
+				
+				writer.write(date);
 				writer.close();
 				fos.close();
 				
@@ -126,7 +134,10 @@ public class MemoryService extends IntentService {
 				
 				fos = openFileOutput(TIMENAME, Context.MODE_PRIVATE);
 				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
-				writer.write(Calendar.getInstance().getTime().toString());
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd|HH:mm:ss");
+				Calendar cal = Calendar.getInstance();
+				String date = dateFormat.format(cal.getTime())+"|"+cal.ZONE_OFFSET;
+				writer.write(date);
 				writer.close();
 				fos.close();
 				
@@ -343,7 +354,8 @@ public class MemoryService extends IntentService {
 			
 			//grabs json name
 			JSONObject json = new JSONObject(preview);
-			String htmlPath = (String)json.get("file_URL");
+			String htmlPath = (String)json.get("file_path");
+			
 			//creates html file
 			file = new File(htmlPath);
 			
@@ -368,41 +380,107 @@ public class MemoryService extends IntentService {
 		}
 		return true;
 	}
-	
-	public String grabFromServer(){
-		
-		HttpClient client = new DefaultHttpClient();
-	    HttpPost httppost = new HttpPost(url);
 
-	    try {
-	    	
-			HttpResponse response = client.execute(httppost);
-			return response.toString();
-			
+	// Tested
+	public String grabFromServer() {
+
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd|HH:mm:ss");
+		Calendar cal = Calendar.getInstance();
+		String date = dateFormat.format(cal.getTime()) + "|" + cal.ZONE_OFFSET;
+
+		HttpClient client = new DefaultHttpClient();
+		HttpGet request = new HttpGet(
+				"http://serene-ridge-8390.herokuapp.com/articles?user[email]=test@test.com");
+
+		request.setHeader("Accept", "application/json");
+		request.setHeader("Content-type", "application/json");
+
+		HttpResponse response = null;
+		try {
+			response = client.execute(request);
 		} catch (ClientProtocolException e) {
-			
-			return null;
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (IOException e) {
-			
-			return null;
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String textView = "";
+		// Get the response
+		BufferedReader rd = null;
+		try {
+			rd = new BufferedReader(new InputStreamReader(response.getEntity()
+					.getContent()));
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		String line = "";
+		try {
+			while ((line = rd.readLine()) != null) {
+				textView += line;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return textView;
+	}
+
+	// Write data to file
+	public void writeToFile(String data) {
+
+		String server = grabFromServer();
+		try {
+
+			JSONArray json = new JSONArray(server);
+
+			// runs through to create feeds-array
+			for (int i = 0; i < json.length(); i++) {
+
+				JSONArray feeds = json.getJSONObject(i).getJSONArray("feed");
+
+				//
+				for (int j = 0; j < feeds.length(); j++) {
+
+					JSONObject feed = feeds.getJSONObject(j);
+					String html = feed.getString("page_content");
+					feed.remove("page_content");
+					String preview = feed.toString();
+					createFile(preview, html);
+				}
+
+			}
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
-	//What is called during this service
+	// What is called during this service
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		
+
 		boolean result = createGlobal();
-		
+
 		Log.w("TeamDick", "Vitchyr Monitor");
-		//pull from server
-		//write to local memory
+		
+		writeToFile(grabFromServer());
+		// pull from server
+		// write to local memory
 	}
 
 	@Override
 	public void onCreate(){
 		
 		super.onCreate();
+		createGlobal();
 		
 		AccountManager am = AccountManager.get(this);
         Account[] accounts = am.getAccountsByType("com.google");

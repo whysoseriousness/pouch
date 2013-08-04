@@ -4,7 +4,7 @@
     <string name="app_name">PouchApp</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="button_send">Render</string>
+    <string name="button_send">Launch Pouch</string>
     <string name="title_activity_display_message">My Message</string>
 
 </resources>
