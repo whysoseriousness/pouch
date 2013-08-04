@@ -3,6 +3,10 @@ package com.example.pouchapp;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +15,8 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 public class MainActivity extends Activity {
 	public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
@@ -21,8 +27,32 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         service = new MemoryService();
+        
+        List<Map<String, String>> planetsList = initFeed();
+        ListView lv = (ListView) findViewById(R.id.listView);
+        SimpleAdapter simpleAdpt = new SimpleAdapter(this, planetsList, android.R.layout.simple_list_item_1, new String[] {"planet"}, new int[] {android.R.id.text1});
+        lv.setAdapter(simpleAdpt);
     }
+    
+    private List<Map<String, String>> initFeed(){
+        List<Map<String, String>> planetsList = new ArrayList<Map<String,String>>();
+    	planetsList.add(createPlanet("planet", "Mercury"));
+        planetsList.add(createPlanet("planet", "Venus"));
+        planetsList.add(createPlanet("planet", "Mars"));
+        planetsList.add(createPlanet("planet", "Jupiter"));
+        planetsList.add(createPlanet("planet", "Saturn"));
+        planetsList.add(createPlanet("planet", "Uranus"));
+        planetsList.add(createPlanet("planet", "Neptune"));
+        return planetsList;
+    }
+    
+    private HashMap<String, String> createPlanet(String key, String name){
+    	HashMap<String, String> planet = new HashMap<String, String>();
+    	planet.put(key, name);
 
+    	return planet;
+    }
+ 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -32,10 +62,8 @@ public class MainActivity extends Activity {
     }
     
     
-    public void sendMessage(View view){
+    public void renderHtml(View view){
     	Intent intent = new Intent(this, DisplayMessageActivity.class);
-    	//EditText editText = (EditText) findViewById(R.id.edit_message);
-    	//String message = editText.getText().toString();
     	
     	String read;
 		StringBuilder message = new StringBuilder("");
@@ -63,4 +91,5 @@ public class MainActivity extends Activity {
     	
     	throw new Exception();
     }
+
 }
