@@ -14,6 +14,11 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Date;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,6 +35,7 @@ import android.util.Log;
 
 public class MemoryService extends IntentService {
 	
+	private String url = "http://www.google.com";
 	public MemoryService(){
 		
 		this("Noname");
@@ -357,6 +363,24 @@ public class MemoryService extends IntentService {
 		return true;
 	}
 	
+	public String grabFromServer(){
+		
+		HttpClient client = new DefaultHttpClient();
+	    HttpPost httppost = new HttpPost(url);
+
+	    try {
+	    	
+			HttpResponse response = client.execute(httppost);
+			return response.toString();
+			
+		} catch (ClientProtocolException e) {
+			
+			return null;
+		} catch (IOException e) {
+			
+			return null;
+		}
+	}
 
 	//What is called during this service
 	@Override
