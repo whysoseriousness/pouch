@@ -102,11 +102,13 @@ public class Feeder extends Activity {
     	List<Feed> feeds = new ArrayList<Feed>();
     	MemoryService ms = new MemoryService();
     	List<String> previews = ms.getAllPreviews();
+    	Log.w("==>",previews.size()+"<<<<<<<<<<");
     	for(int i = 0; i < previews.size(); i++){
     		try{
     			JSONObject json = new JSONObject(previews.get(i));
-    			MyCard card = new MyCard(json.get("author").toString());
-    			mCardView.addCard(card);
+    			
+    			//MyCard card = new MyCard(json.get("author").toString());
+    			//mCardView.addCard(card);
     		} catch(JSONException e) {
     			Log.w("TeamPenis", "Generating previews failed");
     		}	

@@ -3,6 +3,7 @@
 	<name>PouchApp</name>
 	<comment></comment>
 	<projects>
+		<project>CardsUILib</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

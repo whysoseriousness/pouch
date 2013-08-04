@@ -65,6 +65,7 @@ public class MemoryService extends IntentService {
 	//creates global file cache
 	public boolean createGlobal(){
 
+		
 		String FILENAME = "global";
 		String TIMENAME = "time";
 		File mediaDir = new File(FILENAME);
@@ -72,17 +73,17 @@ public class MemoryService extends IntentService {
 		
 		//Creates file
 		if (!mediaDir.exists()){
-		  
+		 
 			int input = 0;
 
 			FileOutputStream fos;
 			
 			try {
 				
-				fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+				fos = openFileOutput(FILENAME, Context.MODE_WORLD_WRITEABLE);
 				fos.write(Integer.toString(input).getBytes());
 				fos.close();
-				
+				Log.e("CreateGlobal", mediaDir.exists()+"");
 			} catch (Exception e) {
 				return false;
 			}
@@ -92,11 +93,12 @@ public class MemoryService extends IntentService {
 		//Writes to time
 		if(!time.exists()){
 			
+		
 			FileOutputStream fos;
 			
 			try {
 				
-				fos = openFileOutput(TIMENAME, Context.MODE_PRIVATE);
+				fos = openFileOutput(TIMENAME, Context.MODE_WORLD_WRITEABLE);
 				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
 				
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd|HH:mm:ss");
@@ -216,9 +218,10 @@ public class MemoryService extends IntentService {
 	public List<String> getAllPreviews(){
 		
 		List<String> Return = new ArrayList<String>();
-		
+		Log.w("DOYOULIKEDICKS","8=====D");
 		int numFiles = getNumFiles();
 		
+		Log.w("adad", getTime()+ "jjjjjjjjjj");
 		//grabs file
 		if(numFiles != -1){
 			
@@ -471,7 +474,7 @@ public class MemoryService extends IntentService {
 
 		Log.w("TeamDick", "Vitchyr Monitor");
 		
-		writeToFile(grabFromServer());
+		//writeToFile(grabFromServer());
 		// pull from server
 		// write to local memory
 	}
