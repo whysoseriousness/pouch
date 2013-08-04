@@ -1,13 +1,11 @@
 package com.example.pouchapp;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -22,7 +20,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.Html;
-import android.util.Log;
 
 public class MemoryService extends IntentService {
 	
@@ -42,7 +39,6 @@ public class MemoryService extends IntentService {
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 	
-	//Initiates global file
 	//creates global file cache
 	public boolean createGlobal(){
 
@@ -74,8 +70,6 @@ public class MemoryService extends IntentService {
 	//retrieves number of articles
 	//0 = no log file, or no main
 	//-1 = error
-	
-	//Get total file count
 	public int getNumFiles(){
 				
 		String FILENAME = "global";
@@ -90,9 +84,7 @@ public class MemoryService extends IntentService {
 				
 				 input = openFileInput(FILENAME);
 				 BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-				 int ret =  Integer.parseInt(reader.readLine());
-				 reader.close();
-				 return ret;
+				 return Integer.parseInt(reader.readLine());
 				 
 			} catch (Exception e) {
 				
@@ -105,38 +97,6 @@ public class MemoryService extends IntentService {
 	}
 	
 	//retrieves all previews 
-	
-	//global files +1
-	public int increaseFiles(){
-	
-		String FILENAME = "global";
-		
-		File mediaDir = new File(FILENAME);
-		int input = getNumFiles()+1;
-		mediaDir.delete();
-		mediaDir = new File(FILENAME);
-		
-		
-			FileOutputStream fos;
-			
-			try {
-				
-				fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-				fos.write(Integer.toString(input).getBytes());
-				fos.close();
-				
-			} catch (Exception e) {
-				return -1;
-			}
-			
-	
-		
-		return input;
-	}
-	
-	
-	//UNTESTED
-	//Get all previews for this user
 	public List<String> getAllPreviews(){
 		
 		List<String> Return = new ArrayList<String>();
@@ -168,8 +128,6 @@ public class MemoryService extends IntentService {
 								toAdd+=line;
 							}
 							
-							reader.close();
-							
 						} catch (IOException e) {
 							
 							return null;
@@ -189,8 +147,6 @@ public class MemoryService extends IntentService {
 	}
 	
 	//Get a file from path
-	
-	//Get file on path
 	public File getFile(String path){
 		
 		File dir = new File(path);
@@ -205,8 +161,6 @@ public class MemoryService extends IntentService {
 	}
 	
 	//starts repeating 
-	
-	//Repeatedly calls this service
 	public static void setServiceAlarm(Context context, boolean on){
 		
 		Intent i = new Intent(context, MemoryService.class);
@@ -225,38 +179,12 @@ public class MemoryService extends IntentService {
 		}
 	}
 
-	
-	//creates a ID - Preview - Html link
-	public boolean createFile(String preview, Html html){
-		
-		int numCode = increaseFiles();
-		
-		//Writer the preview file
-		File file = new File(numCode+"");
-		try {
-			
-			file.createNewFile();
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-			
-			writer.write(preview);
-			writer.flush();
-			writer.close();
-			
-		} catch (IOException e) {
-			
-			return false;
-		}
-		return true;
-	}
-	
-	
-	//What is called during this service
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		
 		boolean result = createGlobal();
 		
-		Log.w("TAGDICK", "helomoteo");
+		
 		//pull from server
 		//write to local memory
 	}
