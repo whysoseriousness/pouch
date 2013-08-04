@@ -13,6 +13,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
@@ -35,7 +38,7 @@ public class MemoryService extends IntentService {
 		// TODO Auto-generated constructor stub
 	}
 
-	private static final int POLL_INTERVAL = 1000; //10 minutes
+	private static final int POLL_INTERVAL = 1000*100; //10 minutes
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO: Return the communication channel to the service.
@@ -147,7 +150,7 @@ public class MemoryService extends IntentService {
 		if(numFiles != -1){
 			
 			//loops through all file
-			for(int i=0;i<numFiles;i++){
+			for(int i=0;i<=numFiles;i++){
 				
 				String path = i+"";
 				String toAdd = "";
@@ -178,10 +181,10 @@ public class MemoryService extends IntentService {
 						
 						return null;
 					}
-					
+					Return.add(toAdd);
 				}
 				
-				Return.add(toAdd);
+				
 			}
 		}
 		
@@ -246,6 +249,13 @@ public class MemoryService extends IntentService {
 			
 			return false;
 		}
+		
+		try {
+			JSONObject json = new JSONObject(preview);
+		} catch (JSONException e) {
+			
+			return false;
+		}
 		return true;
 	}
 	
@@ -256,7 +266,7 @@ public class MemoryService extends IntentService {
 		
 		boolean result = createGlobal();
 		
-		Log.w("TAGDICK", "helomoteo");
+		Log.w("TeamDick", "Vitchyr Monitor");
 		//pull from server
 		//write to local memory
 	}
