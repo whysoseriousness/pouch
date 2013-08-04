@@ -1,0 +1,80 @@
+package com.example.pouchapp;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
+
+public class Feeder extends Activity {
+	public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
+	public MemoryService service;
+	public SimpleAdapter simpleAdpt;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        service = new MemoryService();
+        Intent i = new Intent(this, MemoryService.class);
+        this.startService(i);
+        
+        AccountManager am = AccountManager.get(this);
+        Account[] accounts = am.getAccountsByType("com.google");
+
+        ListView lv = (ListView) findViewById(R.id.listView);
+        List<Feed> feeds = getFeedOld();
+        ListAdapter adapter = new FeedAdapter(this, feeds, android.R.layout.simple_list_item_1,
+        									   new String[] {Feed.KEY_SOURCE, Feed.KEY_TITLE},
+        									   new int[] {android.R.id.text1, android.R.id.text2});
+        lv.setAdapter(adapter);
+        
+        // React to user clicks on item
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
+                                    long id) {
+           	 TextView clickedView = (TextView) view;
+             renderHtml(clickedView);
+            }
+       });
+    }
+    
+    private List<Feed> getFeed() {
+    	List<Feed> feeds = new ArrayList<Feed>();
+    	MemoryService ms = new MemoryService();
+    	List<String> previews = ms.getAllPreviews();
+    	for(int i = 0; i < previews.size(); i++) {
+    		try{
+    			JSONObject json = new JSONObject(previews.get(i));
+        		feeds.add(new Feed(json.get("Author").toString(), json.get("file_URL").toString()));
+    		} catch(JSONException e) {
+    			Log.w("TeamPenis", "Generating previews failed");
+    		}
+    	}
+    	return feeds;
+    }
+    
+    private List<Feed> getFeedOld() {
+    	List<Feed> feeds = new ArrayList<Feed>();
+    	feeds.add(new Feed("Verge", "verge_page_output.html"));
+    	feeds.add(new Feed("Verge", "Michelle"));
+    	feeds.add(new Feed("Verge", "Android"));
+    	feeds.add(new Feed("Verge", "Apple"));
+    	feeds.add(new Feed("Verge", "Hackathon"));
+    	return feeds;
+    }
+}
