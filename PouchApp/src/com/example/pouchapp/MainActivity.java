@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -37,6 +39,9 @@ public class MainActivity extends Activity {
         service = new MemoryService();
         Intent i = new Intent(this, MemoryService.class);
         this.startService(i);
+        
+        AccountManager am = AccountManager.get(this);
+        Account[] accounts = am.getAccountsByType("com.google");
 
         ListView lv = (ListView) findViewById(R.id.listView);
         List<Feed> feeds = getFeed();
