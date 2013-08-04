@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
@@ -16,6 +19,7 @@ import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -44,7 +48,7 @@ public class MainActivity extends Activity {
         Account[] accounts = am.getAccountsByType("com.google");
 
         ListView lv = (ListView) findViewById(R.id.listView);
-        List<Feed> feeds = getFeed();
+        List<Feed> feeds = getFeedOld();
         ListAdapter adapter = new FeedAdapter(this, feeds, android.R.layout.simple_list_item_1,
         									   new String[] {Feed.KEY_SOURCE, Feed.KEY_TITLE},
         									   new int[] {android.R.id.text1, android.R.id.text2});
@@ -56,7 +60,7 @@ public class MainActivity extends Activity {
             public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
                                     long id) {
            	 TextView clickedView = (TextView) view;
-             renderFromSite(clickedView);
+             renderHtml(clickedView);
             }
        });
     }
@@ -73,13 +77,28 @@ public class MainActivity extends Activity {
         return planetsList;
     }
     
-    private List<Feed> getFeed() {
+    private List<Feed> getFeedOld() {
     	List<Feed> feeds = new ArrayList<Feed>();
-    	feeds.add(new Feed("Verge", "Obama"));
+    	feeds.add(new Feed("Verge", "verge_page_output.html"));
     	feeds.add(new Feed("Verge", "Michelle"));
     	feeds.add(new Feed("Verge", "Android"));
     	feeds.add(new Feed("Verge", "Apple"));
     	feeds.add(new Feed("Verge", "Hackathon"));
+    	return feeds;
+    }
+    
+    private List<Feed> getFeed() {
+    	List<Feed> feeds = new ArrayList<Feed>();
+    	MemoryService ms = new MemoryService();
+    	List<String> previews = ms.getAllPreviews();
+    	for(int i = 0; i < previews.size(); i++) {
+    		try{
+    			JSONObject json = new JSONObject(previews.get(i));
+        		feeds.add(new Feed(json.get("Author").toString(), json.get("file_URL").toString()));
+    		} catch(JSONException e) {
+    			Log.w("TeamPenis", "Generating previews failed");
+    		}
+    	}
     	return feeds;
     }
     
@@ -120,7 +139,7 @@ public class MainActivity extends Activity {
 		StringBuilder message = new StringBuilder("");
     	try{
     		AssetManager am = this.getAssets();
-        	InputStream is = am.open("verge_page_output.html");
+        	InputStream is = am.open(view.getText().toString());
     		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
     		while((read = bufferedReader.readLine()) != null){
     			message.append(read);
@@ -131,6 +150,14 @@ public class MainActivity extends Activity {
     	}
 
     	String messageOut = Html.fromHtml(message.toString()).toString();
+    	intent.putExtra(EXTRA_MESSAGE, messageOut);
+    	startActivity(intent);
+    }
+    
+    public void renderYuxiao(TextView view) {
+    	Intent intent = new Intent(this, DisplayMessageActivity.class);
+    	MemoryService ms = new MemoryService();
+    	String messageOut = Html.fromHtml(ms.getHtml(view.getText().toString())).toString();
     	intent.putExtra(EXTRA_MESSAGE, messageOut);
     	startActivity(intent);
     }

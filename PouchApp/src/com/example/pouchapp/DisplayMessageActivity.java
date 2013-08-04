@@ -2,13 +2,15 @@ package com.example.pouchapp;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
-import android.webkit.WebView;
+import android.widget.TextView;
 
 public class DisplayMessageActivity extends Activity {
-/*
  
     @SuppressLint("NewApi")
     @Override
@@ -34,8 +36,7 @@ public class DisplayMessageActivity extends Activity {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
-    */
-	
+	/*
 	@SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,7 @@ public class DisplayMessageActivity extends Activity {
         
         setContentView(webView);
 	}
+	*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

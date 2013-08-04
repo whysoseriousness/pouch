@@ -36,8 +36,8 @@ import android.util.Log;
 public class MemoryService extends IntentService {
 	
 	private String url = "http://www.google.com";
+	
 	public MemoryService(){
-		
 		this("Noname");
 	}
 	public MemoryService(String name) {
