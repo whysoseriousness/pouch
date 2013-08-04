@@ -22,6 +22,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
@@ -36,6 +38,7 @@ import android.util.Log;
 public class MemoryService extends IntentService {
 	
 	private String url = "http://www.google.com";
+	private String user =""; 
 	public MemoryService(){
 		
 		this("Noname");
@@ -45,7 +48,7 @@ public class MemoryService extends IntentService {
 		// TODO Auto-generated constructor stub
 	}
 
-	private static final int POLL_INTERVAL = 1000*100; //10 minutes
+	private static final int POLL_INTERVAL = 1000; //10 minutes
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO: Return the communication channel to the service.
@@ -310,7 +313,7 @@ public class MemoryService extends IntentService {
 	
 	//HTML part UNTESTED
 	//creates a ID - Preview - Html link
-	public boolean createFile(String preview, Html html){
+	public boolean createFile(String preview, String html){
 		
 		int numCode = increaseFiles();
 		
@@ -348,7 +351,7 @@ public class MemoryService extends IntentService {
 				FileOutputStream fos = openFileOutput(htmlPath, Context.MODE_PRIVATE);
 				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
 				
-				writer.write(html.toString());
+				writer.write(html);
 				writer.flush();
 				writer.close();
 				
@@ -398,6 +401,10 @@ public class MemoryService extends IntentService {
 		
 		super.onCreate();
 		
+		AccountManager am = AccountManager.get(this);
+        Account[] accounts = am.getAccountsByType("com.google");
+        user = accounts[0].name;
+        
 		setServiceAlarm(this, true);
 	}
 }
