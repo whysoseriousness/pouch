@@ -25,8 +25,7 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
-	public MemoryService service;
-	public SimpleAdapter simpleAdpt;
+	public MemoryService service; 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +35,7 @@ public class MainActivity extends Activity {
         
         List<Map<String, String>> planetsList = initFeed();
         ListView lv = (ListView) findViewById(R.id.listView);
-        registerForContextMenu(lv);
-        simpleAdpt = new SimpleAdapter(this, planetsList, android.R.layout.simple_list_item_1, new String[] {"planet"}, new int[] {android.R.id.text1});
+        SimpleAdapter simpleAdpt = new SimpleAdapter(this, planetsList, android.R.layout.simple_list_item_1, new String[] {"planet"}, new int[] {android.R.id.text1});
         lv.setAdapter(simpleAdpt);
         
         // React to user clicks on item
@@ -84,6 +82,7 @@ public class MainActivity extends Activity {
         menu.setHeaderTitle("Options for " + map.get("planet"));
         menu.add(1, 1, 1, "Details");
         menu.add(1, 2, 2, "Delete");
+
     }
 
     @Override
