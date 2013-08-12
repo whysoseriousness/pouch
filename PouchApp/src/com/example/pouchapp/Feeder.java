@@ -117,7 +117,7 @@ public class Feeder extends Activity {
 	
 	private void setDemoFeed(CardUI mCardView) {
 		MemoryService ms = new MemoryService();
-		List<>
+		//List<>
 	}
 	
 	/*
