@@ -1,0 +1,27 @@
+package com.example.pouchapp;
+
+import android.content.Context;
+import android.graphics.Color;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
+
+import com.cardsui.example.R;
+import com.fima.cardsui.objects.Card;
+
+public class MyCard extends Card {
+	public MyCard(String title){
+		super(title);
+	}
+
+	@Override
+	public View getCardContent(Context context) {
+		View view = LayoutInflater.from(context).inflate(R.layout.card_ex, null);
+		
+		TextView tv = (TextView) view.findViewById(R.id.title);
+		tv.setText(title);
+		tv.setTextColor(Color.parseColor("#FF0000"));
+		
+		return view;
+	}
+}

@@ -1,6 +1,7 @@
 package com.example.pouchapp;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -11,8 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.net.Uri;
@@ -23,12 +22,12 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.fima.cardsui.views.CardUI;
-import com.fima.cardsui.objects.CardStack;
 
 public class Feeder extends Activity {
 	public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
@@ -71,14 +70,14 @@ public class Feeder extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feeder);
-        service = new MemoryService();
-        Intent i = new Intent(this, MemoryService.class);
-        this.startService(i);
+        //service = new MemoryService();
+        //Intent i = new Intent(this, MemoryService.class);
+        //this.startService(i);
         
         mCardView = (CardUI) findViewById(R.id.cardsview);
-        mCardView.setSwipeable(false);
+        mCardView.setSwipeable(true);
         
-        setCardFeed(mCardView);
+        setDemoFeed(mCardView);
         /*
         MyCard card = new MyCard("Fuck yeah bitches");
         mCardView.addCard(card);
@@ -116,8 +115,45 @@ public class Feeder extends Activity {
 	}
 	
 	private void setDemoFeed(CardUI mCardView) {
-		MemoryService ms = new MemoryService();
-		List<>
+		AssetManager am = getAssets();
+		for (int f = 1; f <= 5; f++){
+
+		String file = "demo/verge_demo" + Integer.toString(f);
+		InputStream ims = null;
+		try {
+			ims = am.open(file);
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		BufferedReader br = new BufferedReader(new InputStreamReader(ims));
+		String js = "";
+		String line = "";
+		try {
+			while ((line = br.readLine()) != null) {
+				js += line; 
+			}
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			JSONObject json = new JSONObject(js);
+			MyCard card = new MyCard(json.get("title").toString(), json.get("author").toString());
+			card.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(Feeder.this, DisplayMessageActivity.class);
+					intent.putExtra(EXTRA_MESSAGE, "ho");
+					startActivity(intent);
+				}
+	        });
+			mCardView.addCard(card);
+		} catch (JSONException e) {
+			Log.e("poop", js);
+			Log.e("error", e.toString());
+		}
+		}
 	}
 	
 	/*
