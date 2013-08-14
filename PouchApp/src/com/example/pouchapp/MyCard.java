@@ -1,7 +1,7 @@
 package com.example.pouchapp;
 
 import android.content.Context;
-import android.content.DialogInterface.OnClickListener;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -9,26 +9,22 @@ import android.widget.TextView;
 import com.fima.cardsui.objects.Card;
 
 public class MyCard extends Card {
-	private OnClickListener mListener;
-	public MyCard(String title){
+	public MyCard(String title, String desc){
 		super(title);
+		this.desc = desc;
 	}
 
 	@Override
 	public View getCardContent(Context context) {
 		View view = LayoutInflater.from(context).inflate(R.layout.card_ex, null);
-
-		((TextView) view.findViewById(R.id.title)).setText(title);
-
+		
+		TextView tv = (TextView) view.findViewById(R.id.title);
+		tv.setText(title);
+		tv.setTextColor(Color.parseColor("#CC0099"));
+		
+		TextView tvdesc = (TextView) view.findViewById(R.id.description);
+		tvdesc.setText(desc);
 		
 		return view;
 	}
-
-	public void setOnClickListener(OnClickListener onClickListener) {
-		mListener = onClickListener;
-	}
-
-	
-	
-	
 }
