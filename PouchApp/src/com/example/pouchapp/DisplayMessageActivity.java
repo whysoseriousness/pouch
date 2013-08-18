@@ -18,21 +18,16 @@ public class DisplayMessageActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.article);
         
         // Get the message from the intent
         Intent intent = getIntent(); 
         String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         
-        // Create the view
-        TextView textView = new TextView(this);
-        textView.setTextSize(15);
+        TextView textView = (TextView) this.findViewById(R.id.article_text);
         textView.setText(message);
-        textView.setMovementMethod(new ScrollingMovementMethod());
-        textView.setTextColor(Color.parseColor("#8a7575"));
         Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
         textView.setTypeface(tf);
-        
-        setContentView(textView);
 
         // Make sure we're running on Honeycomb or higher to use ActionBar APIs
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

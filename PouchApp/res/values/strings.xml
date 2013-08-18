@@ -6,5 +6,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="button_send">Launch Pouch</string>
     <string name="title_activity_display_message">My Message</string>
+    <string name="sync_button_text">Sync</string>
+    <string name="sync_button_content_description">sync button</string>
 
 </resources>

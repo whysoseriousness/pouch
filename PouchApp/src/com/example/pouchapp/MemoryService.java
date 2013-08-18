@@ -43,25 +43,24 @@ import android.util.Log;
 
 public class MemoryService extends IntentService {
 	
-	private String url = "http://www.google.com";
-	private String user =""; 
+	private String user ="test@test.com"; 
+	private List<Feed> feeds;
+	private static final int POLL_INTERVAL = 1000; //10 minutes
+	
 	public MemoryService(){
-		
 		this("Noname");
 	}
 	public MemoryService(String name) {
 		super(name);
-		// TODO Auto-generated constructor stub
+		feeds = new ArrayList<Feed>();
 	}
-
-	private static final int POLL_INTERVAL = 1000; //10 minutes
+	
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO: Return the communication channel to the service.
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 	
-
 	//Initiates global file
 	//creates global file cache
 	public boolean createGlobal(){
@@ -93,12 +92,9 @@ public class MemoryService extends IntentService {
 		
 		//Writes to time
 		if(!time.exists()){
-			
-		
 			FileOutputStream fos;
 			
 			try {
-				
 				fos = openFileOutput(TIMENAME, Context.MODE_WORLD_WRITEABLE);
 				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
 				
@@ -149,12 +145,6 @@ public class MemoryService extends IntentService {
 			}
 		
 	}
-
-	//retrives time table
-	public String getTime(){
-		
-		return getStringFromFile("time");
-	}
 	
 	//total file
 	public int getNumFiles(){
@@ -165,16 +155,14 @@ public class MemoryService extends IntentService {
 		//Reads from file
 		if (mediaDir.exists()){
 		  
-			FileInputStream input = null;
+			FileInputStream input;
 			
 			try {
-				
 				 input = openFileInput(FILENAME);
 				 BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 				 int ret =  Integer.parseInt(reader.readLine());
 				 reader.close();
 				 return ret;
-				 
 			} catch (Exception e) {
 				
 				return -1;
@@ -216,97 +204,75 @@ public class MemoryService extends IntentService {
 	}
 	
 	//Get all previews for this user
-	public List<String> getAllPreviews(){
-		
-		List<String> Return = new ArrayList<String>();
-		Log.w("DOYOULIKEDICKS","8=====D");
-		int numFiles = getNumFiles();
-		
-		Log.w("adad", getTime()+ "jjjjjjjjjj");
-		//grabs file
-		if(numFiles != -1){
-			
-			//loops through all file
-			for(int i=0;i<=numFiles;i++){
-				
-				String path = i+"";
-				String toAdd = getStringFromFile(path);
-				
-				if(toAdd!=null)
-					Return.add(getStringFromFile(path));
-				
-				
-			}
-		}
-		
-		return Return;
+	public List<Feed> getFeeds(Context context){
+		return feeds;
 	}
 	
-	//Get file on path
-	public File getFile(String path){
+	// TODO: connect to web service
+	public void loadFeeds(Context context){
+		Feed f1 = new Feed("Test Title 1", "Author 1", "Preview 1", "Path_1");
+		Feed f2 = new Feed("Test Title 2", "Author 2", "Preview 2", "Path_2");
 		
-		File dir = new File(getFilesDir(),path);
+		feeds.add(f1);
+		feeds.add(f2);
 		
-		//Reads from file
-		if (dir.exists()){
-		  
-			return dir;
+		
+		String filepath = "Path_1";
+		String content = "<p>test content 1</p><p>work</p>";
+		
+		try {
+			FileOutputStream fos = context.openFileOutput(filepath, Context.MODE_PRIVATE);
+			fos.write(content.getBytes());
+			fos.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e){
+			e.printStackTrace();
 		}
 		
-		return null;
+		filepath = "Path_2";
+		content = "<p>test content 2</p><p>work</p>";
+		
+		try {
+			FileOutputStream fos = context.openFileOutput(filepath, Context.MODE_PRIVATE);
+			fos.write(content.getBytes());
+			fos.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e){
+			e.printStackTrace();
+		}
 	}
-	
-	//Converts file path to string
-	public String getStringFromFile(String path){
 		
-		File file = getFile(path);
-		String all = "";
-		
-		//if file exists
-		if(file!=null){
+	/**
+	 * Return the html content of an article given its path.
+	 * @param path The memory path to the article
+	 * @return the html content
+	 */
+	public static String getContent(Context context, String path){
+		FileInputStream in;
+		try {
+			in = context.openFileInput(path);
+			InputStreamReader isr = new InputStreamReader(in);
+			BufferedReader br = new BufferedReader(isr);
+			StringBuilder sb = new StringBuilder();
 			
-			String line = "";
-			FileInputStream input;
-			try {
-				
-				//opens stream and reader
-				input = openFileInput(path);
-				BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-				String toAdd = "";
-				
-				//add all lines
-				try {
-					while((toAdd = reader.readLine())!=null){
-						
-						all+=toAdd;
-					}
-				} catch (IOException e) {
-					
-					return null;
-				}
-			} catch (FileNotFoundException e) {
-				
-				return null;
+			String line;
+			while ((line = br.readLine()) != null){
+				sb.append(line);
 			}
 			
-			return all;
+			return sb.toString();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return "File not found.";
+		} catch (IOException e){
+			e.printStackTrace();
+			return "File could not be read.";
 		}
 		
-		return null;
-	}
-	
-	//Grabs all HTML files
-	public String getHtml(String path){
-		
-		File file = getFile(path);
-		String toAdd = "";
-		
-		if(file!=null){
-			
-			return getStringFromFile(path);
-		}
-		
-		return null;
 	}
 
 	//Repeatedly calls this service
@@ -328,9 +294,9 @@ public class MemoryService extends IntentService {
 		}
 	}
 
-	
 	//HTML part UNTESTED
 	//creates a ID - Preview - Html link
+	
 	public boolean createFile(String preview, String html){
 		
 		int numCode = increaseFiles();
@@ -394,7 +360,7 @@ public class MemoryService extends IntentService {
 
 		HttpClient client = new DefaultHttpClient();
 		HttpGet request = new HttpGet(
-				"http://serene-ridge-8390.herokuapp.com/articles?user[email]=test@test.com");
+				"http://serene-ridge-8390.herokuapp.com/articles?user[email]=" + user);
 
 		request.setHeader("Accept", "application/json");
 		request.setHeader("Content-type", "application/json");
@@ -480,6 +446,7 @@ public class MemoryService extends IntentService {
 		// pull from server
 		// write to local memory
 	}
+
 
 	@Override
 	public void onCreate(){

@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 package com.example.pouchapp;
 
 import android.app.Activity;
@@ -31,4 +29,3 @@ public class MainActivity extends Activity {
     	throw new Exception();
     }
 }
->>>>>>> d2c0b5d20b3111fce3b3eca1e9c46f0f9c4ef5d6
